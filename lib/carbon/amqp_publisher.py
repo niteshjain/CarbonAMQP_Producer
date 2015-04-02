@@ -38,6 +38,7 @@ from carbon import state
 def writeMetric(metricList, host, port, username, password,
                 vhost, exchange, queue, spec=None, channel_number=1, ssl=False):
     
+    global conn
     if not spec:
         spec = txamqp.spec.load(os.path.normpath(
             os.path.join(os.path.dirname(__file__), 'amqp0-8.xml')))
@@ -152,9 +153,15 @@ class PublishMetrics:
   def successful(self,_):
       log.amqpPublisher("Completed publishing %d (metric, datapoints) tuples"%(len(self.metricList)))
       self.metricList = []
-      
+
+  @inlineCallbacks      
   def tryAgain(self,_):
-      log.amqpPublisher("Failed to publish %d (metric, datapoints) tuples"%(len(self.metricList))) 
+      log.amqpPublisher("Failed to publish %d (metric, datapoints) tuples"%(len(self.metricList)))
+      try: 
+          yield conn.close("Closing Connection")
+          log.amqpPublisher("Closing connection after failing to publish")
+      except Exception, e:
+          log.amqpPublisher("Error in closing connection: %s"%(repr(e))) 
       #pass
 
   def nextCall(self,_): 
