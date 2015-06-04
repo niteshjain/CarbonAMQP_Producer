@@ -137,7 +137,7 @@ def writeMetric(metricList, host, port, username, password,
 #    main()
 
 CACHE_SIZE_LOW_WATERMARK = settings.MAX_CACHE_SIZE * 0.95
-NUM_of_PUBLISHES_per_CONNECTION = 10
+NUM_of_PUBLISHES_per_CONNECTION = 500
 
 class PublishMetrics:
 
