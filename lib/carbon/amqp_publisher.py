@@ -60,12 +60,12 @@ def writeMetric(metricList, host, port, username, password,
   
     yield channel.exchange_declare(exchange=exchange, type="topic", durable=True, auto_delete=False)
     
-    reply = yield channel.queue_declare(queue = queue, durable = True)
-    my_queue = reply.queue
+    #reply = yield channel.queue_declare(queue = queue, durable = True)
+    #my_queue = reply.queue
 
     #Pickup settings.BIND_PATTERNS somewhere else
-    for bind_pattern in settings.BIND_PATTERNS:
-      yield channel.queue_bind(exchange=exchange, queue=my_queue, routing_key=bind_pattern)
+    #for bind_pattern in settings.BIND_PATTERNS:
+    #  yield channel.queue_bind(exchange=exchange, queue=my_queue, routing_key=bind_pattern)
     
     for (metric, datapoints) in metricList:
       body = ""
@@ -137,7 +137,7 @@ def writeMetric(metricList, host, port, username, password,
 #    main()
 
 CACHE_SIZE_LOW_WATERMARK = settings.MAX_CACHE_SIZE * 0.95
-NUM_of_PUBLISHES_per_CONNECTION = 500
+NUM_of_PUBLISHES_per_CONNECTION = 10
 
 class PublishMetrics:
 
