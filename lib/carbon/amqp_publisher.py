@@ -74,8 +74,8 @@ def writeMetric(metricList, host, port, username, password,
         body = body + temp 
       message = Content(body)
       message["delivery mode"] = 2
-      channel.basic_publish(exchange=exchange, content=message, routing_key=metric)
-    
+      channel.basic_publish(exchange=exchange, content=message, routing_key=metric)       
+      
     yield channel.channel_close()
     yield conn.close("Publish Done. Closing Connection.")
   
@@ -137,7 +137,7 @@ def writeMetric(metricList, host, port, username, password,
 #    main()
 
 CACHE_SIZE_LOW_WATERMARK = settings.MAX_CACHE_SIZE * 0.95
-NUM_of_PUBLISHES_per_CONNECTION = 10
+NUM_of_PUBLISHES_per_CONNECTION = 1000
 
 class PublishMetrics:
 
@@ -181,6 +181,8 @@ class PublishMetrics:
           if (len(self.metricList) > 0) or MetricCache:
               if len(self.metricList) < NUM_of_PUBLISHES_per_CONNECTION :
                   for (metric, datapoints) in self.getMetrics():
+                      if(len(metric)>255):
+                          continue  
                       self.metricList.append((metric, datapoints))
                       if len(self.metricList) >= NUM_of_PUBLISHES_per_CONNECTION :
                           break  
