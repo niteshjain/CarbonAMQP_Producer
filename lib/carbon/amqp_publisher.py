@@ -182,6 +182,7 @@ class PublishMetrics:
               if len(self.metricList) < NUM_of_PUBLISHES_per_CONNECTION :
                   for (metric, datapoints) in self.getMetrics():
                       if(len(metric)>255):
+                          log.amqpPublisher("Dropped metric  %s as it is too long"%(metric))
                           continue  
                       self.metricList.append((metric, datapoints))
                       if len(self.metricList) >= NUM_of_PUBLISHES_per_CONNECTION :
